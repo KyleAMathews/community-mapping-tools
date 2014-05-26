@@ -1,0 +1,40 @@
+{
+  "name": "distance_app",
+  "version": "0.0.0",
+  "description": "Simple node.js/React.js app to calculate distances between addresses",
+  "main": "index.coffee",
+  "dependencies": {
+    "browserify": "^4.1.5",
+    "coffeeify": "^0.6.0",
+    "csv": "^0.4.0",
+    "envify": "^1.2.1",
+    "google-distance": "^0.2.1",
+    "hapi": "^5.0.0",
+    "leveldown": "^0.10.2",
+    "levelup": "^0.18.3",
+    "limiter": "^1.0.5",
+    "react": "^0.10.0",
+    "reactify": "^0.13.1",
+    "socket.io": "^0.9.16",
+    "superagent": "^0.18.0",
+    "swig": "^1.3.2",
+    "underscore": "^1.6.0",
+    "watchify": "^0.10.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "watchify app.coffee --extension='.coffee' -o ./public/app.js -v -d app.coffee",
+    "build": "NODE_ENV=production browserify --extension='.coffee' app.coffee | uglifyjs -cm > ./public/app.js",
+    "collect-static": "collect-static . ./static",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "license": "MIT",
+  "browserify": {
+    "transform": [
+      "coffeeify",
+      "reactify",
+      "envify"
+    ]
+  }
+}
