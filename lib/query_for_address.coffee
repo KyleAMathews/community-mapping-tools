@@ -1,73 +1,77 @@
-distance = require 'google-distance'
 _ = require 'underscore'
+async = require 'async'
+request = require 'request'
 Levelup = require 'levelup'
-RateLimiter = require('limiter').RateLimiter
-limiter = new RateLimiter(10, 10000)
 
 config = require '../config'
 
-addresses = []
+families = []
+count = 0
 config.addressesDB.createReadStream()
   .on('data', (data) ->
     if data?
-      addresses.push data.value['Family Address']
+      families.push data.value
+    else
+      count += 1
+  ).on('end', ->
+    console.log families.length
+    console.log 'bad ' + count
   )
 
 pairsToFetch = []
-module.exports = (address) ->
-  console.log address
-  address = address.trim()
-  console.log addresses.length
-  processUncachedPairs = _.after(addresses.length, queryGoogle)
-  for address2 in addresses
-    address2 = address2.trim()
-    if address is address2
+module.exports = (family) ->
+  pairsToFetch = []
+  processUncachedPairs = _.after(families.length, queryDistance)
+  console.log families.length
+  for family2 in families
+    if family['Family Address'] is family2['Family Address']
       processUncachedPairs()
     else
       # Check if distance already in DB.
-      do (address, address2, config) ->
-        config.distancesDB.get("#{address} || #{address2}", (err, value) ->
-          # If the key isn't found, ask Google to calculate it.
+      do (family, family2, config) ->
+        config.distancesDB.get("#{family['Family Address']} || #{family2['Family Address']}", (err, value) ->
+          # If the key isn't found, ask MapQuest to calculate it.
           if err?.notFound
-            pairsToFetch.push { origin: address, destination: address2 }
+            pairsToFetch.push { origin: family, destination: family2 }
             processUncachedPairs()
           else
-            console.log 'cache hit'
-            config.websocket.sockets.emit('address', value)
-            console.log value
+            config.websocket.sockets.emit('distance', value)
             processUncachedPairs()
         )
 
-queryGoogle = ->
-  while pairsToFetch.length > 0
-    limiter.removeTokens(1, (err, remainingRequests) ->
-      console.log 'remaining: ' + remainingRequests
-      unless err
-        pair = pairsToFetch.pop()
-        do (config, pair) ->
-          console.log 'inside yo'
-          console.log pair
-          distance.get({
-              origin: pair.origin
-              destination: pair.destination
-              units: 'imperial'
-              mode: 'walking'
-            }, (err, data) ->
-              console.log err
-              unless err
-                console.log data,pair
-                console.log "origin: #{address} destination: #{address2}"
-                config.websocket.sockets.emit('address', data)
-                process.exit()
-                console.log data.distance
-                console.log ''
-                config.distancesDB.put "#{pair.origin} || #{pair.destination}", data
+MAPQUEST_URL = "http://open.mapquestapi.com/directions/v2/routematrix?key=#{process.env.MAPQUEST_API_KEY}"
+queryDistance = ->
+  console.log "pairs to fetch: #{pairsToFetch.length}"
+  async.mapLimit(pairsToFetch, 35, (pair, callback) ->
+    do (config, pair, MAPQUEST_URL, callback) ->
+      locations = []
+      locations.push latLng: pair.origin.latLng
+      locations.push latLng: pair.destination.latLng
+      options =
+        method: 'POST'
+        url: MAPQUEST_URL
+        json:
+          locations: locations
+          options:
+            allToAll: false
+      request(options, (err, res, data) ->
+        unless err or !data.distance?
+          distance =
+            origin: pair.origin['Family Address']
+            destination: pair.destination['Family Address']
+            distance: data.distance[1]
+            time: data.time[1]
+          config.websocket.sockets.emit('distance', distance)
+          config.distancesDB.put "#{distance.origin} || #{distance.destination}", distance
 
-                # Save the opposite route by reversing the origin / destination in the data.
-                origin = data.destination
-                destination = data.origin
-                data.origin = origin
-                data.destination = destination
-                config.distancesDB.put "#{pair.destination} || #{pair.origin}", data
-            )
-    )
+          # Save the opposite route by reversing the origin / destination in the data.
+          origin = distance.destination
+          destination = distance.origin
+          distance.origin = origin
+          distance.destination = destination
+          config.distancesDB.put "#{distance.origin} || #{distance.destination}", distance
+          callback err, distance
+        else
+          console.log err
+      )
+  )

@@ -1,4 +1,5 @@
 config = require './config'
+geocode = require './lib/geocode'
 
 Hapi = require 'hapi'
 Ect = require 'ect'
@@ -16,12 +17,26 @@ server = Hapi.createServer('localhost', 8000, {
 })
 
 server.route({
-    method: 'GET',
+    method: 'POST',
     path: '/address',
     handler: (request, reply) ->
-      queryForDistancesFromAddress('1843 9th Ave Apt A San Francisco, California 94122')
+      console.log request.payload
+      if request.payload?.family?
+        queryForDistancesFromAddress(request.payload.family)
       reply('ok')
-
+})
+server.route({
+    method: 'GET',
+    path: '/families',
+    handler: (request, reply) ->
+      addresses = []
+      config.addressesDB.createReadStream()
+        .on('data', (data) ->
+          addresses.push data.value
+        )
+        .on('end', ->
+          reply(addresses)
+        )
 })
 server.route({
     method: 'GET',
@@ -58,11 +73,17 @@ server.route({
         # Don't save addresses w/o a street address i.e. just
         # "San Francisco, CA"
         if address['Family Address'].trim().length > 31
-          config.addressesDB.put address['Couple Name'], address
+          # Geocode address.
+          do (address, config) ->
+            geocode(address['Family Address'], (err, latLng) ->
+              address.latLng = latLng
+              config.addressesDB.put address['Couple Name'], address
+            )
+
       reply('ok')
 })
 
 # Start the server
 server.start ->
   console.log("Hapi server started at " + server.info.uri)
-  config.websocket = server.websocket = SocketIO.listen(server.listener)
+  config.websocket = server.websocket = SocketIO.listen(server.listener, log: false)

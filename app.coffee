@@ -1,19 +1,39 @@
+Container = require './react_components/container'
+
 React = require('react')
+request = require 'superagent'
+window._ = _ = require 'underscore'
 
-SortedAddresses = require './react_components/sorted_addresses'
+request.get('/families', (err, data) ->
+  window.families = data.body
+  throttledRender()
+)
 
-window.a = addresses = {}
+window.addresses = addresses = {}
+window.changeActiveFamily = (newActiveFamily) ->
+  family = _.find families, (fam) -> fam['Couple Name'] is newActiveFamily
+
+  # Set global active family.
+  window.activeFamily = family
+
+  # Trigger pushing of distances for this family.
+  request.post('/address', family: family, (err, res) ->
+    console.log err, res
+  )
+
+  throttledRender()
 
 socket = io.connect('http://localhost')
-socket.on('address', (data) ->
+socket.on('distance', (data) ->
   unless addresses[data.origin]? then addresses[data.origin] = {}
   unless addresses[data.origin][data.destination]?
     addresses[data.origin][data.destination] = data
-    render()
+    throttledRender()
 )
 
 render = ->
   console.log 'rendering'
-  React.renderComponent(SortedAddresses(addresses: addresses), document.body)
+  React.renderComponent(Container(), document.body)
 
+throttledRender = _.throttle render, 500
 render()
