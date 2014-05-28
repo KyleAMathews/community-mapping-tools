@@ -1,3 +1,5 @@
+# Responsible for kicking this thing off.
+
 FamilySelector = require './family_selector'
 SortedAddresses = require './sorted_addresses'
 Header = require './header'

@@ -1,3 +1,5 @@
+# Responsible for the active family selector.
+
 React = require('react')
 
 {select, option} = React.DOM

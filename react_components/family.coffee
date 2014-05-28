@@ -1,3 +1,6 @@
+# Responsible for displaying a single family including
+# their name, address, distance, and a link to a directions map.
+
 React = require('react')
 {div, a, h2, ol, li, br, i, span} = React.DOM
 

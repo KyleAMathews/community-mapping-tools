@@ -1,3 +1,7 @@
+# Responsible for rendering header to app.
+# Includes the title, so progress indicators when calculating distances, and
+# prompts user when they first land to select a family.
+
 React = require('react')
 _ = require 'underscore'
 {div, h1, p, span, i} = React.DOM

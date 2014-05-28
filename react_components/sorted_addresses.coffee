@@ -1,3 +1,6 @@
+# Responsible for displaying addresses sorted by how close they are to the active
+# family.
+
 React = require('react')
 _ = require 'underscore'
 {div, h1, h2, ol, li} = React.DOM

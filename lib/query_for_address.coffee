@@ -1,3 +1,5 @@
+# Queue and query for distances from a family.
+
 _ = require 'underscore'
 async = require 'async'
 request = require 'request'
