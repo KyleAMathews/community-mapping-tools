@@ -13,6 +13,7 @@ module.exports = React.createClass(
   render: ->
     return (
       select onChange: @handleChange,
+        option value: "", ""
         if families?
           for family in families
             if family['Couple Name']?
