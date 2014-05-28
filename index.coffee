@@ -20,7 +20,6 @@ server.route({
     method: 'POST',
     path: '/address',
     handler: (request, reply) ->
-      console.log request.payload
       if request.payload?.family?
         queryForDistancesFromAddress(request.payload.family)
       reply('ok')
@@ -68,7 +67,6 @@ server.route({
     handler: (request, reply) ->
       # Write csv to file
       # parse and put into leveldb
-      console.log request.payload.length
       for address in request.payload
         # Don't save addresses w/o a street address i.e. just
         # "San Francisco, CA"

@@ -6,7 +6,6 @@ module.exports = React.createClass
   render: ->
     if activeFamily?
       distancesCalculated = _.keys(addresses[activeFamily['Family Address']]).length
-      console.log activeFamily, distancesCalculated
     return (React.DOM.div null, [
       h1(null, "Who Are Your Neighbors?")
       unless activeFamily?

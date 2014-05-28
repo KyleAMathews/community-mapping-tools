@@ -6,17 +6,13 @@ request = require 'superagent'
 
 FileImport = React.createClass(
   handleFile: (event) ->
-    console.log event
     files = event.nativeEvent.target.files
     reader = new FileReader()
     reader.readAsText(files[0])
     reader.onload = (event) ->
       csv = event.target.result
-      console.log csv
       CSV.parse(csv, {columns: true}, (err, data) ->
-        console.log err, data
         request.post('/csv', data, (err, res) ->
-          console.log err,res
         )
       )
 

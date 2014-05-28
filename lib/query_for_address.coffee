@@ -6,23 +6,16 @@ Levelup = require 'levelup'
 config = require '../config'
 
 families = []
-count = 0
 config.addressesDB.createReadStream()
   .on('data', (data) ->
     if data?
       families.push data.value
-    else
-      count += 1
-  ).on('end', ->
-    console.log families.length
-    console.log 'bad ' + count
   )
 
 pairsToFetch = []
 module.exports = (family) ->
   pairsToFetch = []
   processUncachedPairs = _.after(families.length, queryDistance)
-  console.log families.length
   for family2 in families
     if family['Family Address'] is family2['Family Address']
       processUncachedPairs()
