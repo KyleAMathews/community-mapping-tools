@@ -9,9 +9,11 @@ module.exports = React.createClass
       console.log activeFamily, distancesCalculated
     return (React.DOM.div null, [
       h1(null, "Who Are Your Neighbors?")
-      if activeFamily? and distancesCalculated < 899
+      unless activeFamily?
+        p null, "Select your family to find your neighbors!"
+      else if activeFamily? and distancesCalculated < 899
         div(className: 'calculating', [
           p null, "Finding the closest neighbors for ", i(null, activeFamily['Couple Name'])
-          span null, "#{distancesCalculated} calculated out of 899"
+          span null, "#{distancesCalculated} distances calculated out of 899"
         ])
     ])
