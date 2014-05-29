@@ -16,6 +16,15 @@ server = Hapi.createServer('localhost', 8000, {
     path: "./views"
 })
 
+# Use HTTP Basic Auth for authentication
+validate = (username, password, callback) ->
+  console.log username, password
+  if username is "happy day" and password is "the sun"
+    callback(null, true, id: 'the user yo', name: 'their name')
+
+server.pack.require 'hapi-auth-basic', (err) ->
+  server.auth.strategy('simple', 'basic', { validateFunc: validate })
+
 server.route({
     method: 'POST',
     path: '/address',
@@ -40,6 +49,8 @@ server.route({
 server.route({
     method: 'GET',
     path: '/hello',
+    config:
+      auth: 'simple'
     handler: (request, reply) ->
       reply.view('hello')
 })
