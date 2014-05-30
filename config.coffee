@@ -1,9 +1,9 @@
 Levelup = require 'levelup'
-levelHUD = require('levelhud')
 addressesDB = Levelup './addressesDB', { valueEncoding: 'json' }
 distancesDB = Levelup './distancesDB', { valueEncoding: 'json' }
 
-unless process.env.ENVIRONMENT is "production"
+unless process.env.NODE_ENV is "production"
+  levelHUD = require('levelhud')
   new levelHUD().use(addressesDB).listen(4420)
   new levelHUD().use(distancesDB).listen(4421)
 
