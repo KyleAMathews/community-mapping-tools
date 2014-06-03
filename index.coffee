@@ -42,14 +42,7 @@ server.route({
     method: 'GET',
     path: '/families',
     handler: (request, reply) ->
-      addresses = []
-      config.addressesDB.createReadStream()
-        .on('data', (data) ->
-          addresses.push data.value
-        )
-        .on('end', ->
-          reply(addresses)
-        )
+      reply(families.addresses)
 })
 server.route({
     method: 'GET',
