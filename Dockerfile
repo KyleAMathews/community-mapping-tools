@@ -1,7 +1,5 @@
 FROM google/nodejs
 
-EXPOSE 8080
-
 WORKDIR /app
 
 # Install npm modules.
@@ -12,5 +10,8 @@ ADD . /app
 
 # Build frontend code
 RUN npm run build-prod
+
+ENV DOCKER true
+EXPOSE 8080
 
 CMD ["npm", "start"]

@@ -1,6 +1,10 @@
 Levelup = require 'levelup'
-addressesDB = Levelup './addressesDB', { valueEncoding: 'json' }
-distancesDB = Levelup './distancesDB', { valueEncoding: 'json' }
+if process.env.DOCKER
+  addressesDB = Levelup '/data/addressesDB', { valueEncoding: 'json' }
+  distancesDB = Levelup '/data/distancesDB', { valueEncoding: 'json' }
+else
+  addressesDB = Levelup './addressesDB', { valueEncoding: 'json' }
+  distancesDB = Levelup './distancesDB', { valueEncoding: 'json' }
 
 unless process.env.NODE_ENV is "production"
   levelHUD = require('levelhud')
