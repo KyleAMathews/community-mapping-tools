@@ -1,3 +1,7 @@
+unless process.env.MAPQUEST_API_KEY?
+  console.log "Must run app with MAPQUEST_API_KEY set as an environment variable."
+  process.exit()
+
 config = require './config'
 geocode = require './lib/geocode'
 
