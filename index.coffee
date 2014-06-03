@@ -9,7 +9,7 @@ queryForDistancesFromAddress  = require('./lib/query_for_address')
 
 renderer = Ect({ root : __dirname + '/views', ext : '.ect' })
 
-server = Hapi.createServer('localhost', 8000, {
+server = Hapi.createServer('0.0.0.0', 8080, {
   views:
     engines:
       html: 'swig'
