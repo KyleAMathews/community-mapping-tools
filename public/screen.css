@@ -1,0 +1,22 @@
+body {
+  background: #FFF4AD;
+  color: #242424;
+  font-family: "Open Sans", Helvetica, sans-serif;
+  margin: 0 auto;
+  width: 570px;
+}
+h1 {
+  font-weight: 700;
+  font-family: "Playfair Display";
+  font-style: italic;
+  font-size: 48px;
+}
+li {
+  margin-bottom: 8px;
+}
+select {
+  font-size: 26px;
+}
+.calculating {
+  margin-bottom: 24px;
+}
