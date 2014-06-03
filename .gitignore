@@ -2,3 +2,4 @@ node_modules/
 addressesDB/
 distancesDB/
 public/
+public/app.js

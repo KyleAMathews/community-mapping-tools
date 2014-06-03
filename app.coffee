@@ -23,7 +23,7 @@ window.changeActiveFamily = (newActiveFamily) ->
 
   throttledRender()
 
-socket = io.connect('http://localhost')
+socket = io()
 socket.on('distance', (data) ->
   unless addresses[data.origin]? then addresses[data.origin] = {}
   unless addresses[data.origin][data.destination]?
