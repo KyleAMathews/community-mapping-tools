@@ -29,9 +29,9 @@
   },
   "devDependencies": {},
   "scripts": {
-    "run": "NODE_ENV=production ./node_modules/.bin/coffee index.coffee",
+    "start": "NODE_ENV=production ./node_modules/.bin/coffee index.coffee",
     "build": "watchify app.coffee --extension='.coffee' -o ./public/app.js -v -d app.coffee",
-    "build-prod": "NODE_ENV=production browserify --extension='.coffee' app.coffee | uglifyjs -cm > ./public/app.js",
+    "build-prod": "NODE_ENV=production browserify --extension='.coffee' app.coffee > public/app.js",
     "collect-static": "collect-static . ./static",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
