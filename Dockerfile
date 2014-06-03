@@ -10,4 +10,7 @@ RUN npm install
 
 ADD . /app
 
+# Build frontend code
+RUN npm run build-prod
+
 CMD ["npm", "start"]
