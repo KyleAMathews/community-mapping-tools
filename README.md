@@ -22,7 +22,7 @@ To create the data-volume container run:
 
 Then run:
 
-`docker run -p 8080:8080 --env MAPQUEST_API_KEY=YOUR_API_KEY --volumes-from distance_data -d neighbor`
+`docker run -p 8080:8080 --env MAPQUEST_API_KEY=YOUR_API_KEY --volumes-from distance_data -d kyma/community-mapping-tools`
 
 Now the app should be running. To upload the LDS ward membership csv, go to http://yoursite.com:8080/import
 
