@@ -1,5 +1,7 @@
 # Queue and query for distances from a family.
 
+families = require './families'
+
 _ = require 'underscore'
 async = require 'async'
 request = require 'request'
@@ -7,18 +9,13 @@ Levelup = require 'levelup'
 
 config = require '../config'
 
-families = []
-config.addressesDB.createReadStream()
-  .on('data', (data) ->
-    if data?
-      families.push data.value
-  )
-
 pairsToFetch = []
 module.exports = (family) ->
+  console.log "Querying distances to #{families.addresses.length} families"
+  # Empty out array for new fetch.
   pairsToFetch = []
-  processUncachedPairs = _.after(families.length, queryDistance)
-  for family2 in families
+  processUncachedPairs = _.after(families.addresses.length, queryDistance)
+  for family2 in families.addresses
     if family['Family Address'] is family2['Family Address']
       processUncachedPairs()
     else

@@ -4,6 +4,7 @@ unless process.env.MAPQUEST_API_KEY?
 
 config = require './config'
 geocode = require './lib/geocode'
+families = require './lib/families'
 
 Hapi = require 'hapi'
 Ect = require 'ect'
@@ -90,7 +91,7 @@ server.route({
           do (address, config) ->
             geocode(address['Family Address'], (err, latLng) ->
               address.latLng = latLng
-              config.addressesDB.put address['Couple Name'], address
+              families.add address
             )
 
       reply('ok')
