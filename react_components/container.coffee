@@ -1,3 +1,5 @@
+# @cjsx React.DOM
+
 # Responsible for kicking this thing off.
 
 FamilySelector = require './family_selector'
@@ -8,10 +10,10 @@ React = require('react')
 
 module.exports = React.createClass(
   render: ->
-    return (React.DOM.div null, [
-      Header()
-      FamilySelector()
-      SortedAddresses()
-    ])
+    <div>
+      <Header />
+      <FamilySelector />
+      <SortedAddresses />
+    </div>
 )
 

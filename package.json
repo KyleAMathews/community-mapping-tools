@@ -6,6 +6,7 @@
   "dependencies": {
     "async": "^0.9.0",
     "browserify": "^4.1.5",
+    "coffee-reactify": "^0.1.2",
     "coffee-script": "^1.7.1",
     "coffeeify": "^0.6.0",
     "csv": "^0.4.0",
@@ -30,8 +31,8 @@
   "devDependencies": {},
   "scripts": {
     "start": "NODE_ENV=production ./node_modules/.bin/coffee index.coffee",
-    "build": "watchify app.coffee --extension='.coffee' -o ./public/app.js -v -d app.coffee",
-    "build-prod": "NODE_ENV=production browserify --extension='.coffee' app.coffee > public/app.js",
+    "build": "watchify app.coffee -t [ coffee-reactify --coffeeout ] --extension='.coffee' -o ./public/app.js -v -d app.coffee",
+    "build-prod": "NODE_ENV=production browserify -t [ coffee-reactify --coffeeout ] --extension='.coffee' app.coffee > public/app.js",
     "collect-static": "collect-static . ./static",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

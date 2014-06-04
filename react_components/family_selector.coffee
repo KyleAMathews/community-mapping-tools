@@ -1,8 +1,8 @@
+# @cjsx React.DOM
+
 # Responsible for the active family selector.
 
 React = require('react')
-
-{select, option} = React.DOM
 
 module.exports = React.createClass(
   handleChange: (event) ->
@@ -11,12 +11,15 @@ module.exports = React.createClass(
     changeActiveFamily(newFamilyName)
 
   render: ->
+    options = [<option value=""></option>]
+    if families?
+      for family in families
+        if family['Couple Name']?
+          options.push <option value={family['Couple Name']}>{family['Couple Name']}</option>
+
     return (
-      select onChange: @handleChange,
-        option value: "", ""
-        if families?
-          for family in families
-            if family['Couple Name']?
-              option value: family['Couple Name'], family['Couple Name']
+      <select onChange={@handleChange}>
+        {options}
+      </select>
     )
 )
