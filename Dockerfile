@@ -12,6 +12,7 @@ ADD . /app
 RUN npm run build-prod
 
 ENV DOCKER true
+ENV NODE_ENV production
 EXPOSE 8080
 
-CMD ["npm", "start"]
+CMD ["./node_modules/.bin/coffee", "index.coffee"]
